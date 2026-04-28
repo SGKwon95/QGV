@@ -1,8 +1,15 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalForPrisma = globalThis as any
 
-export const prisma = globalForPrisma.prisma || new (require('@prisma/client').PrismaClient)()
+let prisma: any
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+try {
+  const { PrismaClient } = require('@prisma/client')
+  prisma = globalForPrisma.prisma || new PrismaClient()
+  if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+} catch {
+  prisma = null
+}
 
+export { prisma }
 export default prisma
