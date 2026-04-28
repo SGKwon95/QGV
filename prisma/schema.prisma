@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Movie {
+  id            String   @id @default(cuid())
+  title         String
+  overview      String
+  posterUrl     String
+  backdropUrl   String
+  rating        Float
+  genre         String
+  releaseDate   DateTime
+  runningTime   Int
+  director      String
+  cast          String
+  openDate      DateTime
+  closeDate     DateTime?
+  status        String   @default("upcoming")
+  theaters      TheaterMovie[]
+  showtimes     Showtime[]
+  reviews       Review[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([status])
+  @@index([releaseDate])
+  @@index([rating])
+}
+
+model Theater {
+  id            String   @id @default(cuid())
+  name          String
+  location      String
+  address       String
+  phone         String?
+  thumbnailUrl  String?
+  movies        TheaterMovie[]
+  showtimes     Showtime[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([name])
+}
+
+model TheaterMovie {
+  id            String   @id @default(cuid())
+  theaterId     String
+  movieId       String
+  theater       Theater  @relation(fields: [theaterId], references: [id], onDelete: Cascade)
+  movie         Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  screenType    String
+  price         Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([theaterId, movieId])
+}
+
+model Showtime {
+  id            String   @id @default(cuid())
+  movieId       String
+  theaterId     String
+  screenNumber  String
+  screenType    String
+  startTime     DateTime
+  endTime       DateTime
+  price         Int
+  totalSeats    Int      @default(200)
+  availableSeats Int     @default(200)
+  theater       Theater  @relation(fields: [theaterId], references: [id], onDelete: Cascade)
+  movie         Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([movieId, startTime])
+  @@index([theaterId, startTime])
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  movieId       String
+  userId        String
+  username      String
+  content       String
+  rating        Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  movie         Movie    @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  @@index([movieId])
+  @@index([rating])
+}

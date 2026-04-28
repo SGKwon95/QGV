@@ -1,0 +1,8 @@
+export { default as Header } from '@/components/header/header'
+export { default as Hero } from '@/components/hero/hero'
+export { default as MovieCard } from '@/components/movie-card/movie-card'
+export { default as MovieList } from '@/components/movie-list/movie-list'
+export { default as Screening } from '@/components/screening/screening'
+export { default as ReviewSection } from '@/components/review/review-section'
+export { default as TheaterList } from '@/components/theater/theater-list'
+export { GenreBadge, RatingStars, Button, Badge } from '@/components/ui/buttons'
